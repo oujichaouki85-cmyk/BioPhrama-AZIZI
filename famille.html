@@ -354,25 +354,25 @@ alert("fonction appel�e");
  cart.forEach(it=>{
   let sub = it.prix * it.qte;
   total += sub;
-  message += it.nom + " x" + it.qte + " = " + sub + " �\n";
+  message += it.nom + " x" + it.qte + " = " + sub + " €\n";
  });
 
  let livraison = 7;
  total += livraison;
 
- message += "\nLivraison: " + livraison + " �";
- message += "\nTOTAL: " + total + " �\n\n";
+ message += "\nLivraison: " + livraison + " €";
+ message += "\nTOTAL: " + total + " €\n\n";
 
  message += "Client:\n" + nom + " " + prenom + "\n" + adresse;
 
  // ? ENVOI EMAILJS
-  alert("fonction appel�e");
+  alert("fonction appelée");
  emailjs.send("service_mntu679", "template_ck3fxdg", {
   message: message
  })
  .then(function() {
 
-  alert("Commande envoy�e ?");
+  alert("Commande envoyée ?");
 
   // ? vider panier
   localStorage.setItem("cart", JSON.stringify([]));
@@ -421,10 +421,10 @@ function generateOrderNumber() {
 
 window.sendOrder = function(){
 
- alert("fonction appel�e");
+ alert("fonction appelée");
 
  if(typeof emailjs === "undefined"){
-  alert("EmailJS non charg� ?");
+  alert("EmailJS non chargé ?");
   return;
  }
  let orderId = generateOrderNumber();
@@ -443,23 +443,23 @@ window.sendOrder = function(){
  cart.forEach(it=>{
   let sub = it.prix * it.qte;
   total += sub;
-  message += it.nom + " x" + it.qte + " = " + sub + " �\n";
+  message += it.nom + " x" + it.qte + " = " + sub + " €\n";
  });
 
  let livraison = 7;
  total += livraison;
 
- message += "\nLivraison: " + livraison + " �";
- message += "\nTOTAL: " + total + " �\n\n";
+ message += "\nLivraison: " + livraison + " €";
+ message += "\nTOTAL: " + total + " €\n\n";
 
- message += "Client:\n" + nom + " " + prenom + "\n" + adresse;
+ message += "Client:"+ orderId + "\n" + nom + " " + prenom + "\n" + adresse;
  
 emailjs.send("service_mntu679", "template_ck3fxdg", {
-    message: message,
-    order_id: orderId   // ✅ nouveau champ
+    message: message, 
+	//order_id: orderId   // ✅ nouveau champ
 })
  .then(function(response) {
-  alert("? EMAIL ENVOY� !");
+  alert("? EMAIL ENVOYE !");
   console.log(response);
  })
  .catch(function(error) {
