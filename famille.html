@@ -366,7 +366,7 @@ window.sendOrder = function(){
   alert("EmailJS non chargé ?");
   return;
  }
- let orderId = generateOrderNumber();
+// let orderId = generateOrderNumber();
  let nom = document.getElementById("nom").value;
  let prenom = document.getElementById("prenom").value;
  let adresse = document.getElementById("adresse").value;
@@ -377,7 +377,7 @@ window.sendOrder = function(){
  }
 
  let total = 0;
- let message = "Commande N°: " + orderId + "\n\n";
+ let message = "Commande N°: 02\n\n";
 
  cart.forEach(it=>{
   let sub = it.prix * it.qte;
