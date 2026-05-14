@@ -330,7 +330,7 @@ window.toggleCart = function(){
 window.showCheckout = function(){
  document.getElementById("checkoutForm").style.display = "block";
 }
-function generateOrderNumber() {
+/*function generateOrderNumber() {
     let today = new Date();
 
     let dd = String(today.getDate()).padStart(2, '0');
@@ -356,7 +356,7 @@ function generateOrderNumber() {
     let countStr = String(counter).padStart(2, '0');
 
     return datePart + "-" + countStr;
-}
+}*/
 
 window.sendOrder = function(){
 
@@ -391,7 +391,7 @@ window.sendOrder = function(){
  message += "\nLivraison: " + livraison + " €";
  message += "\nTOTAL: " + total + " €\n\n";
 
- message += "Client:"+ orderId + "\n" + nom + " " + prenom + "\n" + adresse;
+ message += "Client:\n" + nom + " " + prenom + "\n" + adresse;
  
 emailjs.send("service_mntu679", "template_ck3fxdg", {
     message: message, 
