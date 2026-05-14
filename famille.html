@@ -330,7 +330,7 @@ window.toggleCart = function(){
 window.showCheckout = function(){
  document.getElementById("checkoutForm").style.display = "block";
 }
-/*function generateOrderNumber() {
+function generateOrderNumber() {
     let today = new Date();
 
     let dd = String(today.getDate()).padStart(2, '0');
@@ -339,34 +339,32 @@ window.showCheckout = function(){
 
     let datePart = dd + mm + yy; // ex: 140526
 
-    // récupérer compteur stocké
+    // récupérer dernier compteur
     let lastDate = localStorage.getItem("orderDate");
     let counter = localStorage.getItem("orderCount");
 
     if (lastDate === datePart) {
-        counter = parseInt(counter) + 1;
+        counter = parseInt(counter || "0") + 1;
     } else {
         counter = 1;
     }
 
-    // sauvegarder
+    // sauvegarde
     localStorage.setItem("orderDate", datePart);
     localStorage.setItem("orderCount", counter);
 
-    let countStr = String(counter).padStart(2, '0');
+    let countStr = String(counter).padStart(3, '0');
 
-    return datePart + "-" + countStr;
-}*/
+    return datePart + "-" + countStr; // ex: 140526-001
+}
 
 window.sendOrder = function(){
-
- alert("fonction appelée");
 
  if(typeof emailjs === "undefined"){
   alert("EmailJS non chargé ?");
   return;
  }
-// let orderId = generateOrderNumber();
+
  let nom = document.getElementById("nom").value;
  let prenom = document.getElementById("prenom").value;
  let adresse = document.getElementById("adresse").value;
@@ -376,8 +374,11 @@ window.sendOrder = function(){
   return;
  }
 
+ let cart = getCart();
+ let orderId = generateOrderNumber(); // ✅ NEW
+
  let total = 0;
- let message = "Commande N°: 02\n\n";
+ let message = "Commande N°: " + orderId + "\n\n";
 
  cart.forEach(it=>{
   let sub = it.prix * it.qte;
@@ -392,18 +393,17 @@ window.sendOrder = function(){
  message += "\nTOTAL: " + total + " €\n\n";
 
  message += "Client:\n" + nom + " " + prenom + "\n" + adresse;
- 
-emailjs.send("service_mntu679", "template_ck3fxdg", {
-    message: message, 
-	//order_id: orderId   // ✅ nouveau champ
-})
+
+ emailjs.send("service_mntu679", "template_ck3fxdg", {
+    message: message,
+    order_id: orderId // ✅ tu peux aussi l’utiliser dans EmailJS
+ })
  .then(function(response) {
-  alert("? EMAIL ENVOYE !");
-  console.log(response);
+  alert("✅ EMAIL ENVOYE !");
  })
  .catch(function(error) {
-  alert("? ERREUR EMAIL");
-  console.log("ERREUR:", error);
+  alert("❌ ERREUR EMAIL");
+  console.log(error);
  });
 
 }
