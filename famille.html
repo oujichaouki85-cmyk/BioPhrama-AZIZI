@@ -390,6 +390,35 @@ alert("fonction appel�e");
   console.log(error);
  });
 }*/
+
+function generateOrderNumber() {
+    let today = new Date();
+
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0');
+    let yy = String(today.getFullYear()).slice(-2);
+
+    let datePart = dd + mm + yy; // ex: 140526
+
+    // récupérer compteur stocké
+    let lastDate = localStorage.getItem("orderDate");
+    let counter = localStorage.getItem("orderCount");
+
+    if (lastDate === datePart) {
+        counter = parseInt(counter) + 1;
+    } else {
+        counter = 1;
+    }
+
+    // sauvegarder
+    localStorage.setItem("orderDate", datePart);
+    localStorage.setItem("orderCount", counter);
+
+    let countStr = String(counter).padStart(2, '0');
+
+    return datePart + "-" + countStr;
+}
+
 window.sendOrder = function(){
 
  alert("fonction appel�e");
@@ -398,10 +427,37 @@ window.sendOrder = function(){
   alert("EmailJS non charg� ?");
   return;
  }
+ let orderId = generateOrderNumber();
+ let nom = document.getElementById("nom").value;
+ let prenom = document.getElementById("prenom").value;
+ let adresse = document.getElementById("adresse").value;
 
- emailjs.send("service_mntu679", "template_ck3fxdg", {
-  message: "TEST EMAILJS"
- })
+ if(!nom || !prenom || !adresse){
+  alert("Remplir tous les champs !");
+  return;
+ }
+
+ let total = 0;
+ let message = "Commande N°: " + orderId + "\n\n";
+
+ cart.forEach(it=>{
+  let sub = it.prix * it.qte;
+  total += sub;
+  message += it.nom + " x" + it.qte + " = " + sub + " �\n";
+ });
+
+ let livraison = 7;
+ total += livraison;
+
+ message += "\nLivraison: " + livraison + " �";
+ message += "\nTOTAL: " + total + " �\n\n";
+
+ message += "Client:\n" + nom + " " + prenom + "\n" + adresse;
+ 
+emailjs.send("service_mntu679", "template_ck3fxdg", {
+    message: message,
+    order_id: orderId   // ✅ nouveau champ
+})
  .then(function(response) {
   alert("? EMAIL ENVOY� !");
   console.log(response);
