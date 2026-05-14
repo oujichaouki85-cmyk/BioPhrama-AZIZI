@@ -149,10 +149,10 @@ header {
  <h4>Infos client</h4>
 
  <input id="nom" placeholder="Nom" style="width:100%; margin:5px;"><br>
- <input id="prenom" placeholder="Pr�nom" style="width:100%; margin:5px;"><br>
+ <input id="prenom" placeholder="Prénom" style="width:100%; margin:5px;"><br>
  <input id="adresse" placeholder="Adresse" style="width:100%; margin:5px;"><br>
 
- <p>Livraison : 7 �</p>
+ <p>Livraison : 7 €</p>
 
  <button onclick="sendOrder()">Valider</button>
 
@@ -173,7 +173,7 @@ header {
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 if(typeof emailjs === "undefined"){
- console.log("EmailJS non charg�");
+ console.log("EmailJS non chargé");
 }
 // ? vider panier UNE seule fois au premier lancement
 if (!sessionStorage.getItem("initCartDone")) {
@@ -330,67 +330,6 @@ window.toggleCart = function(){
 window.showCheckout = function(){
  document.getElementById("checkoutForm").style.display = "block";
 }
-/*window.sendOrder = function(){
-alert("fonction appel�e");
- let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
- if(cart.length === 0){
-  alert("Panier vide !");
-  return;
- }
-
- let nom = document.getElementById("nom").value;
- let prenom = document.getElementById("prenom").value;
- let adresse = document.getElementById("adresse").value;
-
- if(!nom || !prenom || !adresse){
-  alert("Remplir tous les champs !");
-  return;
- }
-
- let total = 0;
- let message = "Commande :\n\n";
-
- cart.forEach(it=>{
-  let sub = it.prix * it.qte;
-  total += sub;
-  message += it.nom + " x" + it.qte + " = " + sub + " €\n";
- });
-
- let livraison = 7;
- total += livraison;
-
- message += "\nLivraison: " + livraison + " €";
- message += "\nTOTAL: " + total + " €\n\n";
-
- message += "Client:\n" + nom + " " + prenom + "\n" + adresse;
-
- // ? ENVOI EMAILJS
-  alert("fonction appelée");
- emailjs.send("service_mntu679", "template_ck3fxdg", {
-  message: message
- })
- .then(function() {
-
-  alert("Commande envoyée ?");
-
-  // ? vider panier
-  localStorage.setItem("cart", JSON.stringify([]));
-
-  // ? MAJ affichage
-  updateCart();
-
-  // ? REDIRECTION PAGE PRINCIPALE
-  window.location.href = "index.html"; 
-  // ?? remplace par ta vraie page principale
-
- })
- .catch(function(error) {
-  alert("Erreur envoi ?");
-  console.log(error);
- });
-}*/
-
 function generateOrderNumber() {
     let today = new Date();
 
