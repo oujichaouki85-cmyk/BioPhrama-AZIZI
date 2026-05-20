@@ -1,4 +1,4 @@
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -51,7 +51,7 @@ header {
 
     background-repeat: no-repeat;
     background-position: center;
-    background-size: cover;   /* ? fond plein ÔøΩcran */
+    background-size: cover;   /* ? fond plein Ècran */
 
     z-index: -1;
     opacity: 0.35;
@@ -149,10 +149,10 @@ header {
  <h4>Infos client</h4>
 
  <input id="nom" placeholder="Nom" style="width:100%; margin:5px;"><br>
- <input id="prenom" placeholder="Pr√©nom" style="width:100%; margin:5px;"><br>
+ <input id="prenom" placeholder="PrÈnom" style="width:100%; margin:5px;"><br>
  <input id="adresse" placeholder="Adresse" style="width:100%; margin:5px;"><br>
 
- <p>Livraison : 2 ‚Ç¨</p>
+ <p>Livraison : 7 Ä</p>
 
  <button onclick="sendOrder()">Valider</button>
 
@@ -173,7 +173,7 @@ header {
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 if(typeof emailjs === "undefined"){
- console.log("EmailJS non charg√©");
+ console.log("EmailJS non chargÈ");
 }
 // ? vider panier UNE seule fois au premier lancement
 if (!sessionStorage.getItem("initCartDone")) {
@@ -182,12 +182,12 @@ if (!sessionStorage.getItem("initCartDone")) {
 }
 // ===== DATA =====
 const familles = [
- {nom:"Solaire", img:"https://www.maparatunisie.tn/wp-content/uploads/2026/04/la-roche-posay-anthelios-uvmune-400-fluide-anti-taches-spf-50-sans-parfum-50ml.jpg"},
- {nom:"Visage", img:"https://i.imgur.com/YQnEZTk.jpeg"},
- {nom:"Corps", img:"https://i.imgur.com/i3mQHvy.jpeg"},
- {nom:"Huile", img:"https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHjKKIQ3MYbNWu4Da8HhtwnDLiqnMciK6pAXEap4nA7Fjbxl5n60zmZL05f1Z5L4zovhszRD1Fe2cTPNmb4Tp8m2o-q9BHHklfn7IsOWUSo2pfKd-DrUeZEDv2NjZXV6xXASj9dwIk5dIA8qxXBngYFQt92qWY8W7Fbxl2qey80Bu5RzxOCHzhvP5g/s16000/avis-avene-protections-solaires-notino-coups-de-coeur-de-mumu.jpeg"},
- {nom:"S√®rom", img:"https://i.imgur.com/uL3HKIC.jpeg"},
- {nom:"Ortho", img:"https://i.imgur.com/IIwhcLd.jpeg"}
+ {nom:"Solaire", img:"https://picsum.photos/800/300?1"},
+ {nom:"Visage", img:"https://picsum.photos/800/300?2"},
+ {nom:"Corps", img:"https://picsum.photos/800/300?3"},
+ {nom:"Huile", img:"https://picsum.photos/800/300?4"},
+ {nom:"S√®rom", img:"https://picsum.photos/800/300?5"},
+ {nom:"Ortho", img:"https://picsum.photos/800/300?6"}
 ];
 
 const produits = {
@@ -330,38 +330,12 @@ window.toggleCart = function(){
 window.showCheckout = function(){
  document.getElementById("checkoutForm").style.display = "block";
 }
-function generateOrderNumber() {
-    let today = new Date();
+/*window.sendOrder = function(){
+alert("fonction appelÈe");
+ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    let dd = String(today.getDate()).padStart(2, '0');
-    let mm = String(today.getMonth() + 1).padStart(2, '0');
-    let yy = String(today.getFullYear()).slice(-2);
-
-    let datePart = dd + mm + yy; // ex: 140526
-
-    // r√©cup√©rer dernier compteur
-    let lastDate = localStorage.getItem("orderDate");
-    let counter = localStorage.getItem("orderCount");
-
-    if (lastDate === datePart) {
-        counter = parseInt(counter || "0") + 1;
-    } else {
-        counter = 1;
-    }
-
-    // sauvegarde
-    localStorage.setItem("orderDate", datePart);
-    localStorage.setItem("orderCount", counter);
-
-    let countStr = String(counter).padStart(3, '0');
-
-    return datePart + "-" + countStr; // ex: 140526-001
-}
-
-window.sendOrder = function(){
-
- if(typeof emailjs === "undefined"){
-  alert("EmailJS non charg√© ?");
+ if(cart.length === 0){
+  alert("Panier vide !");
   return;
  }
 
@@ -374,36 +348,67 @@ window.sendOrder = function(){
   return;
  }
 
- let cart = getCart();
- let orderId = generateOrderNumber(); // ‚úÖ NEW
-
  let total = 0;
- let message = "Commande N¬∞: " + orderId + "\n\n";
+ let message = "Commande :\n\n";
 
  cart.forEach(it=>{
   let sub = it.prix * it.qte;
   total += sub;
-  message += it.nom + " x" + it.qte + " = " + sub + " ‚Ç¨\n";
+  message += it.nom + " x" + it.qte + " = " + sub + " Ä\n";
  });
 
  let livraison = 7;
  total += livraison;
 
- message += "\nLivraison: " + livraison + " ‚Ç¨";
- message += "\nTOTAL: " + total + " ‚Ç¨\n\n";
+ message += "\nLivraison: " + livraison + " Ä";
+ message += "\nTOTAL: " + total + " Ä\n\n";
 
  message += "Client:\n" + nom + " " + prenom + "\n" + adresse;
 
+ // ? ENVOI EMAILJS
+  alert("fonction appelÈe");
  emailjs.send("service_mntu679", "template_ck3fxdg", {
-    message: message,
-    order_id: orderId // ‚úÖ tu peux aussi l‚Äôutiliser dans EmailJS
+  message: message
  })
- .then(function(response) {
-  alert("‚úÖ EMAIL ENVOYE !");
+ .then(function() {
+
+  alert("Commande envoyÈe ?");
+
+  // ? vider panier
+  localStorage.setItem("cart", JSON.stringify([]));
+
+  // ? MAJ affichage
+  updateCart();
+
+  // ? REDIRECTION PAGE PRINCIPALE
+  window.location.href = "index.html"; 
+  // ?? remplace par ta vraie page principale
+
  })
  .catch(function(error) {
-  alert("‚ùå ERREUR EMAIL");
+  alert("Erreur envoi ?");
   console.log(error);
+ });
+}*/
+window.sendOrder = function(){
+
+ alert("fonction appelÈe");
+
+ if(typeof emailjs === "undefined"){
+  alert("EmailJS non chargÈ ?");
+  return;
+ }
+
+ emailjs.send("service_mntu679", "template_ck3fxdg", {
+  message: "TEST EMAILJS"
+ })
+ .then(function(response) {
+  alert("? EMAIL ENVOY… !");
+  console.log(response);
+ })
+ .catch(function(error) {
+  alert("? ERREUR EMAIL");
+  console.log("ERREUR:", error);
  });
 
 }
