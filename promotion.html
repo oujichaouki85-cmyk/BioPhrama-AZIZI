@@ -8,13 +8,13 @@
 
 <body>
 
-<!-- ✅ PANIER ICON -->
+<!-- âœ… PANIER ICON -->
 <div id="cartIcon" onclick="toggleCart()"
      style="position:fixed;top:20px;right:20px;background:orange;color:white;padding:10px;border-radius:20px;cursor:pointer;z-index:2000;">
-  🛒 <span id="cartCount">0</span>
+  ðŸ›’ <span id="cartCount">0</span>
 </div>
 
-<!-- ✅ PANIER PANEL -->
+<!-- âœ… PANIER PANEL -->
 <div id="cartPanel">
 
     <h3>Panier</h3>
@@ -35,7 +35,7 @@
         <h4>Infos client</h4>
 
         <input id="nom" placeholder="Nom" style="width:100%; margin:5px;"><br>
-        <input id="prenom" placeholder="Pr�nom" style="width:100%; margin:5px;"><br>
+        <input id="prenom" placeholder="Prénom" style="width:100%; margin:5px;"><br>
         <input id="adresse" placeholder="Adresse" style="width:100%; margin:5px;"><br>
 
         <button onclick="sendOrder()">Envoyer commande</button>
@@ -43,7 +43,7 @@
 
 </div>
 
-<h2>🔥 Produits en Promotion</h2>
+<h2>ðŸ”¥ Produits en Promotion</h2>
 
 <div class="slider">
   <div class="slider-container">
@@ -67,13 +67,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const promos = [
     {
-      nom: "Crème Vichy",
+      nom: "CrÃ¨me Vichy",
       image: "Images/Vichy1.jpg",
       prix_initial: 40,
       reduction: 15
     },
 	    {
-      nom: "Crème Lotion",
+      nom: "CrÃ¨me Lotion",
       image: "Images/Lotion.jpg",
       prix_initial: 40,
       reduction: 15
@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let cart = [];
 
-  // ✅ AFFICHAGE PRODUITS
+  // âœ… AFFICHAGE PRODUITS
   promos.forEach(p => {
 
     const prix_final = (p.prix_initial * (1 - p.reduction / 100)).toFixed(2);
@@ -112,7 +112,7 @@ track.innerHTML += `
 `;
   });
 
-  // ✅ AJOUT PANIER
+  // âœ… AJOUT PANIER
   window.addToCart = function(nom, prix) {
 
     let existing = cart.find(p => p.nom === nom);
@@ -126,7 +126,7 @@ track.innerHTML += `
     updateCart();
   };
 
-  // ✅ UPDATE PANIER
+  // âœ… UPDATE PANIER
   window.updateCart = function() {
 
     const list = document.getElementById("cartItems");
@@ -143,7 +143,7 @@ track.innerHTML += `
 
       list.innerHTML += `
         <li>
-          ${p.nom} - ${p.prix} DT × ${p.qty}
+          ${p.nom} - ${p.prix} DT Ã— ${p.qty}
           <button onclick="changeQty('${p.nom}', 1)">+</button>
           <button onclick="changeQty('${p.nom}', -1)">-</button>
         </li>
@@ -157,7 +157,7 @@ track.innerHTML += `
     document.getElementById("cartCount").innerText = cart.length;
   };
 
-  // ✅ CHANGER QTY
+  // âœ… CHANGER QTY
   window.changeQty = function(nom, delta) {
 
     let item = cart.find(p => p.nom === nom);
@@ -173,14 +173,14 @@ track.innerHTML += `
     updateCart();
   };
 
-  // ✅ TOGGLE PANIER
+  // âœ… TOGGLE PANIER
   window.toggleCart = function() {
     document.getElementById("cartPanel").classList.toggle("open");
   };
 
-  // ✅ VALIDER
+  // âœ… VALIDER
   window.checkout = function() {
-    alert("Commande validée ✅");
+    alert("Commande validÃ©e âœ…");
   };
 window.showCheckout = function() {
     document.getElementById("checkoutForm").style.display = "block";
@@ -214,7 +214,7 @@ window.sendOrder = function() {
     let prenom = document.getElementById("prenom").value;
     let adresse = document.getElementById("adresse").value;
 
-   if (!nom || !prenom || !adresse) {
+    if (!nom || !prenom || !adresse) {
         alert("Remplir tous les champs !");
         return;
     }
@@ -222,7 +222,7 @@ window.sendOrder = function() {
     let orderId = generateOrderNumber();
 
     let total = 0;
-    let message = "Commande N°: " + orderId + "\n\n";
+    let message = "🛒 Commande N°: " + orderId + "\n\n";
 
     cart.forEach(p => {
         let sub = p.prix * p.qty;
@@ -236,19 +236,29 @@ window.sendOrder = function() {
     }
 
     message += "\nTOTAL: " + total + " DT\n\n";
-    message += "Client:\n" + nom + " " + prenom + "\n" + adresse;
+    message += "👤 Client:\n" + nom + " " + prenom + "\n📍 " + adresse;
 
+    // ✅ Encoder message pour URL
+    let encodedMessage = encodeURIComponent(message);
+
+    // ✅ Mets ton numéro ici (format international sans +)
+    let phone = "21650543814";
+
+    // ✅ Ouvrir WhatsApp
+    window.open(`https://wa.me/${phone}?text=${encodedMessage}`, "_blank");
+
+    // ✅ Optionnel email aussi
     emailjs.send("service_mntu679", "template_ck3fxdg", {
         message: message,
         order_id: orderId
-    })
-    .then(() => {
-        alert("✅ Commande envoyée !");
-    })
-    .catch(err => {
-        alert("❌ Erreur envoi");
-        console.log(err);
     });
+
+    // ✅ Reset panier
+    cart = [];
+    updateCart();
+    document.getElementById("checkoutForm").style.display = "none";
+
+    alert("✅ Redirection vers WhatsApp !");
 };
 cart = [];
 updateCart();
