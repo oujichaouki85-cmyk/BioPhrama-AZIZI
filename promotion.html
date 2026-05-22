@@ -22,7 +22,7 @@
 
     <p>
         Livraison :
-        <input type="checkbox" id="delivery" checked onchange="updateCart()"> 7 DT
+        <input type="checkbox" id="delivery" checked onchange="updateCart()"> 5 DT
     </p>
 
     <p><strong>Total :</strong> <span id="totalPrice">0</span> DT</p>
@@ -143,14 +143,14 @@ track.innerHTML += `
 
       list.innerHTML += `
         <li>
-          ${p.nom} - ${p.prix} DT Ã— ${p.qty}
+          ${p.nom} - ${p.prix} DT  ${p.qty}
           <button onclick="changeQty('${p.nom}', 1)">+</button>
           <button onclick="changeQty('${p.nom}', -1)">-</button>
         </li>
       `;
     });
 
-    if (delivery) total += 7;
+    if (delivery) total += 5;
 
     totalDisplay.innerText = total;
 
@@ -232,7 +232,7 @@ window.sendOrder = function() {
 
     if (document.getElementById("delivery").checked) {
         total += 7;
-        message += "\nLivraison: 7 DT";
+        message += "\nLivraison: 5 DT";
     }
 
     message += "\nTOTAL: " + total + " DT\n\n";
