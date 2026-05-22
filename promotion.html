@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Promotions</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- ✅ PANIER ICON -->
+<div id="cartIcon" onclick="toggleCart()"
+     style="position:fixed;top:20px;right:20px;background:orange;color:white;padding:10px;border-radius:20px;cursor:pointer;z-index:2000;">
+  🛒 <span id="cartCount">0</span>
+</div>
+
+<!-- ✅ PANIER PANEL -->
+<div id="cartPanel">
+
+    <h3>Panier</h3>
+    <ul id="cartItems"></ul>
+
+    <p>
+        Livraison :
+        <input type="checkbox" id="delivery" checked onchange="updateCart()"> 7 DT
+    </p>
+
+    <p><strong>Total :</strong> <span id="totalPrice">0</span> DT</p>
+
+    <!-- ? BOUTON ACHETER -->
+    <button onclick="showCheckout()">? Valider</button>
+
+    <!-- ? FORMULAIRE CLIENT -->
+    <div id="checkoutForm" style="display:none; margin-top:10px; background:#eee; padding:10px;">
+        <h4>Infos client</h4>
+
+        <input id="nom" placeholder="Nom" style="width:100%; margin:5px;"><br>
+        <input id="prenom" placeholder="Pr�nom" style="width:100%; margin:5px;"><br>
+        <input id="adresse" placeholder="Adresse" style="width:100%; margin:5px;"><br>
+
+        <button onclick="sendOrder()">Envoyer commande</button>
+    </div>
+
+</div>
+
+<h2>🔥 Produits en Promotion</h2>
+
+<div class="slider">
+  <div class="slider-container">
+    <div id="promoTrack" class="slider-track"></div>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+(function(){
+    emailjs.init("bNw2AknrF3390_d6H");
+})();
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+  const track = document.getElementById("promoTrack");
+
+  const promos = [
+    {
+      nom: "Crème Vichy",
+      image: "Images/Vichy1.jpg",
+      prix_initial: 40,
+      reduction: 15
+    },
+	    {
+      nom: "Crème Lotion",
+      image: "Images/Lotion.jpg",
+      prix_initial: 40,
+      reduction: 15
+    }
+
+  ];
+
+
+  let cart = [];
+
+  // ✅ AFFICHAGE PRODUITS
+  promos.forEach(p => {
+
+    const prix_final = (p.prix_initial * (1 - p.reduction / 100)).toFixed(2);
+
+track.innerHTML += `
+<div class="produit-promo">
+
+    <div class="image-container">
+        <img src="${p.image}">
+        <span class="promo-badge">-${p.reduction}%</span>
+    </div>
+
+    <h3>${p.nom}</h3>
+
+    <p class="prix">
+        <span class="old">${p.prix_initial} DT</span>
+        <span class="new">${prix_final} DT</span>
+    </p>
+
+    <button onclick="addToCart('${p.nom}', ${prix_final})">
+        ? Acheter
+    </button>
+
+</div>
+`;
+  });
+
+  // ✅ AJOUT PANIER
+  window.addToCart = function(nom, prix) {
+
+    let existing = cart.find(p => p.nom === nom);
+
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({ nom: nom, prix: Number(prix), qty: 1 });
+    }
+
+    updateCart();
+  };
+
+  // ✅ UPDATE PANIER
+  window.updateCart = function() {
+
+    const list = document.getElementById("cartItems");
+    const totalDisplay = document.getElementById("totalPrice");
+    const delivery = document.getElementById("delivery").checked;
+
+    list.innerHTML = "";
+
+    let total = 0;
+
+    cart.forEach(p => {
+
+      total += p.prix * p.qty;
+
+      list.innerHTML += `
+        <li>
+          ${p.nom} - ${p.prix} DT × ${p.qty}
+          <button onclick="changeQty('${p.nom}', 1)">+</button>
+          <button onclick="changeQty('${p.nom}', -1)">-</button>
+        </li>
+      `;
+    });
+
+    if (delivery) total += 7;
+
+    totalDisplay.innerText = total;
+
+    document.getElementById("cartCount").innerText = cart.length;
+  };
+
+  // ✅ CHANGER QTY
+  window.changeQty = function(nom, delta) {
+
+    let item = cart.find(p => p.nom === nom);
+
+    if (!item) return;
+
+    item.qty += delta;
+
+    if (item.qty <= 0) {
+      cart = cart.filter(p => p.nom !== nom);
+    }
+
+    updateCart();
+  };
+
+  // ✅ TOGGLE PANIER
+  window.toggleCart = function() {
+    document.getElementById("cartPanel").classList.toggle("open");
+  };
+
+  // ✅ VALIDER
+  window.checkout = function() {
+    alert("Commande validée ✅");
+  };
+window.showCheckout = function() {
+    document.getElementById("checkoutForm").style.display = "block";
+};
+function generateOrderNumber() {
+    let today = new Date();
+
+    let dd = String(today.getDate()).padStart(2, '0');
+    let mm = String(today.getMonth() + 1).padStart(2, '0');
+    let yy = String(today.getFullYear()).slice(-2);
+
+    let datePart = dd + mm + yy;
+
+    let lastDate = localStorage.getItem("orderDate");
+    let counter = localStorage.getItem("orderCount");
+
+    if (lastDate === datePart) {
+        counter = parseInt(counter || "0") + 1;
+    } else {
+        counter = 1;
+    }
+
+    localStorage.setItem("orderDate", datePart);
+    localStorage.setItem("orderCount", counter);
+
+    return datePart + "-" + String(counter).padStart(3, '0');
+}
+window.sendOrder = function() {
+
+    let nom = document.getElementById("nom").value;
+    let prenom = document.getElementById("prenom").value;
+    let adresse = document.getElementById("adresse").value;
+
+   if (!nom || !prenom || !adresse) {
+        alert("Remplir tous les champs !");
+        return;
+    }
+
+    let orderId = generateOrderNumber();
+
+    let total = 0;
+    let message = "Commande N°: " + orderId + "\n\n";
+
+    cart.forEach(p => {
+        let sub = p.prix * p.qty;
+        total += sub;
+        message += p.nom + " x" + p.qty + " = " + sub + " DT\n";
+    });
+
+    if (document.getElementById("delivery").checked) {
+        total += 7;
+        message += "\nLivraison: 7 DT";
+    }
+
+    message += "\nTOTAL: " + total + " DT\n\n";
+    message += "Client:\n" + nom + " " + prenom + "\n" + adresse;
+
+    emailjs.send("service_mntu679", "template_ck3fxdg", {
+        message: message,
+        order_id: orderId
+    })
+    .then(() => {
+        alert("✅ Commande envoyée !");
+    })
+    .catch(err => {
+        alert("❌ Erreur envoi");
+        console.log(err);
+    });
+};
+cart = [];
+updateCart();
+document.getElementById("checkoutForm").style.display = "none";
+
+});
+</script>
+
+</body>
+</html>
